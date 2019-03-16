@@ -1,29 +1,4 @@
-# vue-dome01
+这是一个无人点餐无人收银的小项目
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+下载后安装依赖  npm install
+下好依赖后直接运行  npm run serve
