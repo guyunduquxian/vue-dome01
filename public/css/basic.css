@@ -1,0 +1,28 @@
+body, div, ul, li, ol, h1, h2, h3, h4, h5, h6, input, textarea, select, p, dl, dt, dd, a, img, button, form, table, th, tr, td, tbody, footer, header, nav, section, aside {
+    margin: 0;
+    padding: 0;
+    tap-highlight-color: transparent;
+} 
+
+ul, ol {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+.clearfix:after {
+    content: "";
+    display: block;
+    visibility: hidden;
+    height: 0;
+    line-height: 0px;
+    clear: both;
+}
+
+body {
+    font: 0.32rem/1.5 'Microsoft YaHei','宋体', Tahoma, Arial, sans-serif;
+    color: #555;
+    background-color: #F7F7F7;
+}
