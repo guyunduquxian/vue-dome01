@@ -5,42 +5,87 @@
 	       		<div class="info_top">
 	       			<img src="../assets/images/timer.png" />	       		       		      			
 	       			<div class="info_right">
-	       				<h2>118号桌待门店接单</h2>
+	       				<h2>{{ uid }}号桌待门店接单</h2>
 	       				<p>请及时联系服务员确认所点菜品信息!</p>
 	       			</div>	 
 	       		</div>	
-       			<h3>已点菜品6份,合计 : <span class="price">60元</span> </h3>     		       	
+       			<h3>已点菜品{{ order.total_num || 0 }}份,合计 : <span class="price">{{ order.total_price || 0 }}元</span> </h3>     		       	
 	        </div>
 
             <!--订单列表-->
-            <div class="order_list">
+            <div class="order_list" v-if="showOrder">
 	       		<h3>菜品详情:</h3>
 	       		<ul class="list">
-	       			<li>
-	       				<div class="title">烧茄子</div>		
-       					<div class="num">1份</div>
-       					<div class="price">12元</div>
+	       			<li v-for="(item, index) in order.items" :key="index">
+	       				<div class="title">{{ item.title }}</div>		
+       					<div class="num">{{ item.num }}份</div>
+       					<div class="price">{{ item.price }}元</div>
 	       			</li>
-	       			
-	       			<li>
-	       				<div class="title">烧茄子</div>
-       					<div class="num">1份</div>
-       					<div class="price">12元</div>
-	       			</li>
-	       			<li>
-	       				<div class="title">手撕包菜</div>	
-       					<div class="num">1份</div>
-       					<div class="price">12元</div>
-	       			</li>	
 	       		</ul>
 	        </div>
+
+            <div class="doPay" @click="doPay" v-if="showOrder">
+                <img src="../assets/images/doorder.png"/>
+                <p>立即支付</p>
+            </div>
         </div>
+        <div class="order_empty" v-if="!showOrder">您还没有下过订单</div>
+
+        <v-navFooter></v-navFooter>
     </div>
 </template>
 
 <script>
+import NavFooter from '@/components/NavFooter.vue';
+
 export default {
-    
+    components: {
+        'v-navFooter': NavFooter
+    },
+    data() {
+        return {
+            order: {},
+            uid: this.$storage.get("roomid"),
+        }
+    },
+    computed: {
+        showOrder() {
+            if(this.order) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    },
+    created() {
+        let uid = this.uid;
+        this.$axios.get("api/getOrder?uid="+ uid)
+        .then( res => {
+            // console.log(res.data.result);
+            this.order = res.data.result[0];
+        })
+        .catch( error => {
+            console.log(error);
+        });
+    },
+    methods: {
+        doPay() {        
+            let uid = this.$storage.get("roomid"); 
+            this.$axios.post("api/doPay", {
+                uid,
+                total_price: this.order.total_price,
+                total_num: this.order.total_num,
+                return_url: this.$config.return_url
+            })
+            .then( res => {
+                // console.log(res.data);
+                location.href = res.data.result.data;
+            })
+            .catch( error => {
+                console.log(error);
+            });
+        }
+    }
 }
 </script>
 
@@ -112,6 +157,36 @@ export default {
                     }
                 }
             }
+
+            .doPay {
+                position: fixed;
+                left: 50%;
+                bottom: 0.2rem;
+                transform: translate(-50%);
+                width: 1.6rem;
+                height: 1.6rem;
+                border-radius: 50%;
+                background-color: red;
+                text-align: center; 
+
+                img {
+                    width: 0.7rem;
+                    vertical-align: top;
+                    margin-top: 0.1rem;
+                }
+
+                p {
+                    color: #fff;
+                    font-size: 0.36rem;
+                    margin-top: -0.1rem;
+                }
+            }
+        }
+
+        .order_empty {
+            text-align: center;
+            font-size: 0.48rem;
+            margin-top: 0.5rem;
         }
     }
 </style>

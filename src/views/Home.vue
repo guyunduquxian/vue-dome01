@@ -15,7 +15,6 @@
         </div>
     </header>
     
-    
     <aside class="left_cate" ref="leftCate">
         <ul class="cate_list">
           <li v-for="(item, index) in menus" :key="index" @click="changeScroll(index)">{{ item.title }}</li>
@@ -34,7 +33,7 @@
         <ul class="classify_list">
           <li class="item" v-for="(item, index) in group.list" :key="index">	
             <div class="inner">
-              <router-link to="/cate">
+              <router-link :to="'/cate?id=' + item._id">
                 <img :src="api+item.img_url" />
                 <p class="title">{{ item.title }}</p>						
                 <p class="price">¥ {{ item.price }}</p>
@@ -46,24 +45,28 @@
       </li> 
      
     </ul>
+
+    <v-navFooter></v-navFooter>
   </div>
 </template>
 
 <script>
+import NavFooter from '@/components/NavFooter.vue';
+
 export default {
   name: "home",
   components: {
-    
+    'v-navFooter': NavFooter
   },
   data() {
       return {
           leftCateShow: false,
           menus: [],
-          api: this.$api
+          api: this.$config.api
       }
   },
   created() {
-      this.$axios.get(this.api+"api/productlist")
+      this.$axios.get("api/productlist")
         .then( res => {
             // console.log(res.data.result);
             this.menus = res.data.result;
@@ -71,9 +74,6 @@ export default {
         .catch( error => {
             console.log(error);
         });
-  },
-  mounted() {
-    
   },
   methods: {
     asideDomInit() {
@@ -88,20 +88,28 @@ export default {
         // console.log(i);
         // console.log(this.$refs.foodsClassify[i].offsetTop);
 
-        //获取要滚动的高度
+        //获取要每一组食物距离屏幕顶部的距离
         let height = this.$refs.foodsClassify[i].offsetTop;
         console.log(height);
-        //滚动的时间500ms，每10ms滚动一次，需50次
-        //每一次滚动的距离
-        let step = height / 50;
         //屏幕已经滚动的距离
-        let distance = document.body.scrollTop;  
+        let distance = document.documentElement.scrollTop;;  
         console.log(distance);
+        //屏幕最大能往上滚动的距离，即所有内容的高度减去屏幕的高度
+        let maxheight = document.documentElement.offsetHeight - window.screen.height;
+        // console.log(maxheight);
+        //每一次滚动的距离
+        let step;
         if(distance < height) {
+            //计算每一次滚动的距离  //滚动的时间500ms，每5ms滚动一次，需100次
+            if (height > maxheight) {
+                height = maxheight;
+            }
+            let newHeight = height - distance;
+            step = newHeight / 50;
             smoothUp();
         } 
         else if(distance > height) {
-            //重新计算需要滚动的距离
+            //计算每一次滚动的距离
             let newHeight = distance - height;
             step = newHeight / 50;
             smoothDown();
@@ -110,28 +118,29 @@ export default {
         function smoothUp() {
           if (distance < height) {
               distance += step;
-              document.body.scrollTop = distance;
-              setTimeout(smoothUp, 10);
+              document.documentElement.scrollTop = distance;
+              setTimeout(smoothUp, 5);
           }
           else {
-              document.body.scrollTop = height;
+              document.documentElement.scrollTop = height;
           }
         }
         //向下滚动
         function smoothDown() {
           if (distance > height) {
               distance -= step;
-              document.body.scrollTop = distance;
-              setTimeout(smoothDown, 10);
+              document.documentElement.scrollTop = distance;
+              setTimeout(smoothDown, 5);
           }
           else {
-              document.body.scrollTop = height;
+              document.documentElement.scrollTop = height;
           }
         }
+
+        this.asideDomInit();
     },
     hideLeftCate(e) {
-        this.$refs.leftCate.style.transform = "translate(-100%,0)";
-        this.leftCateShow = false;
+        this.asideDomInit();
     }
   }
 }

@@ -2,10 +2,10 @@
   <div class="start">
       <div class="start_content">
           <header class="start_header">
-              <img src="../assets/images/canju.png" alt="">用餐人数
+              <img src="../assets/images/canju.png" alt="">修改用餐人数
           </header>
 
-          <p class="notice">请选择真确的用餐人数，小二马上给您送餐具</p>
+          <p class="notice">请选择正确的用餐人数</p>
           <ul class="user_list">
               <li v-for="(item, index) in pNumArr" :key="index" 
                 :class="{ active: currentIndex === index }"
@@ -23,8 +23,12 @@
           <ul class="mark_list">
             <li v-for="(item, index) in mark_list" :key="index" @click="selectMark($event, index)">{{ item }}</li>
           </ul>
-
-          <div class="start_order" @click="addPeopleInfo()">开始点餐</div>
+          
+          <div class="start_btns">
+               <div class="start_cancel" @click="back">取消</div>
+               <div class="start_ok" @click="addPeopleInfo()">确定修改</div>
+          </div>
+         
       </div>
   </div>
 </template>
@@ -37,7 +41,8 @@ export default {
             currentIndex: 0,
             p_mark: "",
             p_num: '1人',
-            mark_list: ['打包带走', '不要放辣椒', '微辣', '中辣']
+            mark_list: ['打包带走', '不要放辣椒', '微辣', '中辣'],
+            peopleList: {}
         }
     },
     computed: {
@@ -46,27 +51,24 @@ export default {
         }
     },
     created() {
+        //获取用餐人的信息
         let uid = this.$storage.get("roomid");
-        // console.log(uid);
         this.$axios.get("api/peopleInfoList?uid="+ uid)
-        .then( res => {
-            // console.log(res.data);
-            //如果有用餐人数信息直接跳转到 点餐页面
-            if(res.data.result.length > 0) {
-                this.$router.push({
-                    path: '/home'
-                });
-            }
-        })
-        .catch( error => {
-            console.log(error);
-        });
+            .then( res => {
+                // console.log(res.data);
+                this.peopleList = res.data.result[0];
+                this.currentIndex = parseInt(this.peopleList.p_num) - 1;
+                this.p_mark = this.peopleList.p_mark;
+            })
+            .catch( error => {
+                console.log(error);
+            });
     },
     methods: {
         addPeopleInfo() {
-            //获取数据 桌子id：是扫描二维码从url获取的
+            //添加数据到服务器
+            //获取数据 桌子id：是扫描二维码从url获取的 
             let uid = this.$storage.get("roomid");
-            // console.log(uid);
             this.$axios.post("api/addPeopleInfo", {
                 uid: uid,
                 p_num: this.p_num,
@@ -77,7 +79,7 @@ export default {
                 if(res.data.success === 'true' ) {
                     console.log(res.data.msg);
                     this.$router.push({
-                        path: '/home'
+                        path: '/cart'
                     });
                 }
             })
@@ -100,6 +102,9 @@ export default {
         },
         clear() {
             this.p_mark = "";
+        },
+        back() {
+            this.$router.go(-1);
         }
     }
 }
@@ -112,7 +117,7 @@ export default {
                 height: 1rem;
                 line-height: 1rem;
                 background-color: #000;
-                width: 3rem;
+                width: 3.2rem;
                 margin: 0.5rem auto 0; 
                 border-radius: 0.1rem;
                 color: #fff;
@@ -121,7 +126,7 @@ export default {
                     width: 0.5rem;
                     position: relative;
                     top: 0.15rem;
-                    margin-left: 0.5rem;
+                    margin-left: 0.3rem;
                     margin-right: 0.2rem;
                 }
             }
@@ -205,16 +210,32 @@ export default {
                     }
                 }
             }
+            
+            .start_btns {
+                display: flex;
+                justify-content: center;
+                margin-top: 1rem;
 
-            .start_order {
-                width: 2rem;
-                height: 2rem;
-                line-height: 2rem;
-                border-radius: 50%;
-                background-color: red;
-                margin: 0.8rem auto 0;
-                text-align: center;
-                color: #fff;
+                .start_cancel {
+                    width: 1.6rem;
+                    height: 1.6rem;
+                    line-height: 1.6rem;
+                    border-radius: 50%;
+                    background-color: red;
+                    color: #fff;
+                    text-align: center;
+                    margin-right: 1rem;
+                }
+
+                .start_ok {
+                    width: 1.6rem;
+                    height: 1.6rem;
+                    border-radius: 50%;
+                    background-color: red;
+                    color: #fff;
+                    line-height: 1.6rem;
+                    text-align: center;
+                }
             }
         }
     }

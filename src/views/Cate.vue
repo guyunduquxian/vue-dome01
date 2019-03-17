@@ -6,33 +6,37 @@
 
 		<div class="cate_content">		
 			<div class="info">				
-				<img src="../assets/images/product.jpg"/>				
-				<h2>小炒肉</h2>				
-				<p class="price">22.00/份</p>
+				<img :src="api+cate.img_url"/>				
+				<h2>{{ cate.title }}</h2>				
+				<p class="price"> {{ cate.price }} 元/份</p>
 			</div>
 			<div class="detial">
 				<h3>商品详情</h3>
 				<div class="content"> 
-					<img src="../assets/images/product.jpg"/>
-					<p>韩国辣酱海鲜炒面,青椒炒牛肉,芦笋腰果炒虾仁,『家常料理』简单又好吃的辣炒起司年糕鸡排</p>
+                    {{ cate.content }}
 				</div>
 			</div>
 		</div>
 		
-		<footer class="cate_footer">
+		<div class="cate_cart">
 			<div class="cart">				
 				<strong>数量:</strong>
 				<div class="cart_num">
-		          <div class="input_left">-</div>
+		          <div class="input_left" @click="decNum">-</div>
 		          <div class="input_center">
-		              <input type="text" value="1" readonly="readonly"/>
+		              <input type="text" :value="num" readonly="readonly"/>
 		          </div>
-		          <div class="input_right">+</div>				      
+		          <div class="input_right" @click="addNum">+</div>				      
 		        </div>	
 
-                <span class="addcart">加入购物车</span>									
+                <span class="addcart" @click="addCart">加入购物车</span>									
 			</div>	
-		</footer>	
+		</div>	
+
+        <div class="toast" v-show="addSuccess">
+            <div class="icon"><i class="iconfont icon-gou"></i></div>
+            <p> 添加成功，在购物车等待 </p>
+        </div>
     </div>
 </template>
 
@@ -41,7 +45,57 @@
     export default {
         data () {
             return {
-                  
+                api: this.$config.api,
+                cate: {},
+                num: 1,
+                addSuccess: false
+            }
+        },
+        created() {
+            let id = this.$route.query.id;
+            // console.log(id);
+            this.$axios.get("api/productcontent?id="+ id)
+            .then( res => {
+                // console.log(res.data);
+                this.cate = res.data.result[0];
+            })
+            .catch( error => {
+                console.log(error);
+            });
+        },
+        methods: {
+            addCart() {
+                //获取数据    桌子号：是扫描二维码从url获取的
+                let uid = this.$storage.get("roomid");
+                this.$axios.post("api/addcart", {
+                    uid: uid,
+                    title: this.cate.title,
+                    price: this.cate.price,
+                    num: this.num,
+                    product_id: this.cate._id,
+                    img_url: this.cate.img_url
+                })
+                .then( res => {
+                    // console.log(res.data);
+                    if(res.data.success === 'true') {
+                        this.addSuccess = true;
+                        let that = this;
+                        setTimeout( function() {
+                            that.addSuccess = false;
+                        },2000);
+                    }
+                })
+                .catch( error => {
+                    console.log(error);
+                });
+            },
+            addNum() {
+                this.num++
+            },
+            decNum() {
+                if(this.num > 1) {
+                    this.num--
+                }
             }
         }
     }
@@ -61,7 +115,7 @@
 
         a {
             display: block;
-            font-size: 0.24rem;
+            font-size: 0.28rem;
             color: #fff;
 
             &::before {
@@ -121,7 +175,7 @@
         }  
     }
 
-    .cate_footer { 
+    .cate_cart { 
         position: fixed;  
         bottom: 0px;  
         height: 1.5rem;
@@ -184,5 +238,26 @@
         }
     }
     
+    .toast {
+        width: 4rem;
+        height: 1.6rem;
+        background-color: rgba(92, 88, 88, 0.8);
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        border-radius: 0.2rem;
+
+        .icon-gou {
+            color: red;
+            font-size: 0.64rem;
+        }
+
+        p {
+            color: #fff;
+            font-size: 0.28rem;
+        }
+    }
 }
 </style>

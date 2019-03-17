@@ -7,6 +7,7 @@ import Cate from "./views/Cate.vue";
 import Order from "./views/Order.vue";
 import OrderPay from "./views/Order_pay.vue";
 import Hot from "./views/Hot.vue";
+import EditPeopleInfo from "./views/EditPeopleInfo.vue";
 
 Vue.use(Router);
 
@@ -14,6 +15,10 @@ export default new Router({
   routes: [
     {
       path: "/",
+      redirect: '/start'
+    },
+    {
+      path: "/start",
       name: "start",
       component: Start
     },
@@ -46,6 +51,11 @@ export default new Router({
       path: "/hot",
       name: "hot",
       component: Hot
+    },
+    {
+      path: "/editPeopleInfo",
+      name: "editPeopleInfo",
+      component: EditPeopleInfo
     }
   ]
 });

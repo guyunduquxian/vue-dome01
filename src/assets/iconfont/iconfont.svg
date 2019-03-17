@@ -1,0 +1,32 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2013-9-30: Created.
+-->
+<svg>
+<metadata>
+Created by iconfont
+</metadata>
+<defs>
+
+<font id="iconfont" horiz-adv-x="1024" >
+  <font-face
+    font-family="iconfont"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="1024"
+    ascent="896"
+    descent="-128"
+  />
+    <missing-glyph />
+    
+    <glyph glyph-name="gou" unicode="&#58891;" d="M1040.27798 628.8290910000001L450.637576 65.939394 87.76404 411.43596l75.571718 72.494545 287.185454-273.467475 514.185051 490.602021z m0 0"  horiz-adv-x="1084" />
+
+    
+    <glyph glyph-name="shanchu" unicode="&#58938;" d="M512.512 864.256C246.784 864.256 32.768 649.728 32.768 384s214.528-480.256 480.256-480.256S993.28 118.272 993.28 384 778.24 864.256 512.512 864.256M713.216 182.272c-12.8-12.8-35.328-12.8-48.128 0l-153.6 153.6-153.6-153.6c-12.8-12.8-35.328-12.8-48.128 0s-12.8 35.328 0 48.128L463.36 384l-153.6 153.6c-12.8 12.8-12.8 35.328 0 48.128s35.328 12.8 48.128 0l153.6-153.6 153.6 153.6c12.8 12.8 35.328 12.8 48.128 0s12.8-35.328 0-48.128L559.616 384l153.6-153.6c15.872-12.8 15.872-35.328 0-48.128z"  horiz-adv-x="1024" />
+
+    
+
+
+  </font>
+</defs></svg>
