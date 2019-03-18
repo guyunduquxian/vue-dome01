@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <header class="home_header">
+    <!-- <header class="home_header">
         <div class="item">
           <img src="../assets/images/rexiao.png"/>
           <p>热销榜</p>				
@@ -13,7 +13,7 @@
           <img src="../assets/images/sousuo.png"/>
           <p>搜你喜欢</p>				
         </div>
-    </header>
+    </header> -->
     
     <aside class="left_cate" ref="leftCate">
         <ul class="cate_list">
@@ -90,10 +90,10 @@ export default {
 
         //获取要每一组食物距离屏幕顶部的距离
         let height = this.$refs.foodsClassify[i].offsetTop;
-        console.log(height);
+        // console.log(height);
         //屏幕已经滚动的距离
         let distance = document.documentElement.scrollTop;;  
-        console.log(distance);
+        // console.log(distance);
         //屏幕最大能往上滚动的距离，即所有内容的高度减去屏幕的高度
         let maxheight = document.documentElement.offsetHeight - window.screen.height;
         // console.log(maxheight);

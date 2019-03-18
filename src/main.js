@@ -19,9 +19,13 @@ Vue.prototype.$storage = Storage;
 
 //获取url传过来的桌号
 // console.log(window.location);
-let roomid = window.location.hash.split('=')[1] || 'a010';
-Storage.set('roomid', roomid);
-// console.log(roomid);
+// let roomid = window.location.hash.split('=')[1] || 'a010';
+
+// if(roomid) {
+//     Storage.set('roomid', roomid);
+// } else {
+//     roomid = Storage.get('roomid');
+// }
 
 //vue-socket.io
 // import VueSocketio from 'vue-socket.io';
@@ -34,7 +38,7 @@ Vue.config.productionTip = false;
 new Vue({
   router,
   store,
-  // sockets: {  /*测试期间写 也可不写在根里面*/
+  // sockets: {  /*测试期间写 也不不写在根里面*/
   //   connect: function(){
   //     console.log('socket connected')
   //   }

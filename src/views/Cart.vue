@@ -69,7 +69,8 @@ export default {
             cartFoods: [],
             peopleList: {},
             totalNum: 0,
-            totalPrice: 0
+            totalPrice: 0,
+            deskId: this.$storage.get("deskId")
         }
     },
     computed: {
@@ -83,8 +84,7 @@ export default {
     },
     created() {
         /*获取商品信息*/
-        let uid = this.$storage.get("roomid");
-        this.$axios.get("api/cartlist?uid="+ uid)
+        this.$axios.get("api/cartlist?uid="+ this.deskId)
             .then( res => {
                 // console.log(res.data);
                 this.cartFoods = res.data.result;
@@ -95,7 +95,7 @@ export default {
             });
 
         // 获取用餐人信息 
-        this.$axios.get("api/peopleInfoList?uid="+ uid)
+        this.$axios.get("api/peopleInfoList?uid="+ this.deskId)
             .then( res => {
                 // console.log(res.data);
                 this.peopleList = res.data.result[0];
@@ -116,10 +116,10 @@ export default {
         },
         addNum(item) {
             //请求远程服务器执行更新操作
-            let uid = this.$storage.get("roomid");
+            let deskId = this.deskId;
             let product_id = item.product_id;
             let num = item.num;
-            let api = 'api/incCart?uid='+ uid +'&product_id='+ product_id +'&num='+ num;
+            let api = 'api/incCart?uid='+ deskId +'&product_id='+ product_id +'&num='+ num;
             this.$axios.get(api)
             .then( res => {
                 // console.log(res.data);
@@ -133,10 +133,10 @@ export default {
         },
         decNum(item, i) {
             //请求远程服务器执行更新操作
-            let uid = this.$storage.get("roomid");
+            let deskId = this.deskId;
             let product_id = item.product_id;
             let num = item.num;
-            let api = 'api/decCart?uid='+ uid +'&product_id='+ product_id +'&num='+ num;
+            let api = 'api/decCart?uid='+ deskId +'&product_id='+ product_id +'&num='+ num;
             this.$axios.get(api)
             .then( res => {
                 // console.log(res.data);
@@ -159,10 +159,9 @@ export default {
             })
         },
         addOrder() {
-            let uid = this.$storage.get("roomid");
             let order = JSON.stringify(this.cartFoods);  /*数组   把json对象转化成json字符串*/
             this.$axios.post("api/addOrder", {
-                uid,
+                uid: this.deskId,
                 p_num: this.peopleList.p_num,
                 p_mark: this.peopleList.p_mark,
                 total_price: this.totalPrice,
@@ -171,12 +170,10 @@ export default {
             })
             .then( res => {
                 // console.log(res.data);
-                if(res.data.success === 'true' ) {
-                    console.log(res.data.msg);
-                    this.$router.push({
-                        path: '/order'
-                    });
-                }
+                console.log(res.data.msg);
+                this.$router.push({
+                    path: '/order'
+                });
             })
             .catch( error => {
                 console.log(error);

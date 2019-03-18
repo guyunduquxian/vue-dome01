@@ -60,8 +60,8 @@ export default {
     },
     methods: {
         getTatalNum() {
-            let uid = this.$storage.get("roomid");
-            this.$axios.get("api/cartCount?uid="+ uid)
+            let deskId = this.$storage.get("deskId");
+            this.$axios.get("api/cartCount?uid="+ deskId)
             .then( res => {
                 // console.log(res.data);
                 this.cartNum = res.data.result;
@@ -94,9 +94,9 @@ export default {
             })
         },
         toOrder_pay() {
-            this.$router.push({
-                path: "/orderPay"
-            })
+            // this.$router.push({
+            //     path: "/orderPay"
+            // })
         }
     }
 }

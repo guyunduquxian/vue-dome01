@@ -2,7 +2,7 @@
   <div class="start">
       <div class="start_content">
           <header class="start_header">
-              <img src="../assets/images/canju.png" alt="">修改用餐人数
+              <img src="../assets/images/canju.png" alt="">修改用餐设置
           </header>
 
           <p class="notice">请选择正确的用餐人数</p>
@@ -42,7 +42,8 @@ export default {
             p_mark: "",
             p_num: '1人',
             mark_list: ['打包带走', '不要放辣椒', '微辣', '中辣'],
-            peopleList: {}
+            peopleList: {},
+            deskId: this.$storage.get("deskId")
         }
     },
     computed: {
@@ -52,11 +53,11 @@ export default {
     },
     created() {
         //获取用餐人的信息
-        let uid = this.$storage.get("roomid");
-        this.$axios.get("api/peopleInfoList?uid="+ uid)
+        this.$axios.get("api/peopleInfoList?uid="+ this.deskId)
             .then( res => {
                 // console.log(res.data);
                 this.peopleList = res.data.result[0];
+                this.p_num = this.peopleList.p_num;
                 this.currentIndex = parseInt(this.peopleList.p_num) - 1;
                 this.p_mark = this.peopleList.p_mark;
             })
@@ -67,10 +68,9 @@ export default {
     methods: {
         addPeopleInfo() {
             //添加数据到服务器
-            //获取数据 桌子id：是扫描二维码从url获取的 
-            let uid = this.$storage.get("roomid");
+            this.p_mark = this.p_mark.trim();
             this.$axios.post("api/addPeopleInfo", {
-                uid: uid,
+                uid: this.deskId,
                 p_num: this.p_num,
                 p_mark: this.p_mark
             })

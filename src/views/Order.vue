@@ -5,7 +5,7 @@
 	       		<div class="info_top">
 	       			<img src="../assets/images/timer.png" />	       		       		      			
 	       			<div class="info_right">
-	       				<h2>{{ uid }}号桌待门店接单</h2>
+	       				<h2>{{ deskId }}号桌待门店接单</h2>
 	       				<p>请及时联系服务员确认所点菜品信息!</p>
 	       			</div>	 
 	       		</div>	
@@ -45,7 +45,7 @@ export default {
     data() {
         return {
             order: {},
-            uid: this.$storage.get("roomid"),
+            deskId: this.$storage.get("deskId"),
         }
     },
     computed: {
@@ -58,8 +58,7 @@ export default {
         }
     },
     created() {
-        let uid = this.uid;
-        this.$axios.get("api/getOrder?uid="+ uid)
+        this.$axios.get("api/getOrder?uid="+ this.deskId)
         .then( res => {
             // console.log(res.data.result);
             this.order = res.data.result[0];
@@ -70,12 +69,11 @@ export default {
     },
     methods: {
         doPay() {        
-            let uid = this.$storage.get("roomid"); 
             this.$axios.post("api/doPay", {
-                uid,
+                uid: this.deskId,
                 total_price: this.order.total_price,
                 total_num: this.order.total_num,
-                return_url: this.$config.return_url
+                return_url: this.$config.return_url   //支付成功后跳转的页面
             })
             .then( res => {
                 // console.log(res.data);

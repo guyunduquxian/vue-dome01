@@ -65,10 +65,9 @@
         },
         methods: {
             addCart() {
-                //获取数据    桌子号：是扫描二维码从url获取的
-                let uid = this.$storage.get("roomid");
+                let deskId = this.$storage.get("deskId");
                 this.$axios.post("api/addcart", {
-                    uid: uid,
+                    uid: deskId,
                     title: this.cate.title,
                     price: this.cate.price,
                     num: this.num,
