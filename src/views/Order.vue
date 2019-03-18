@@ -54,7 +54,7 @@ export default {
         .then( res => {
             // console.log(res.data.result);
             this.order = res.data.result[0];
-            if(order) {
+            if(this.order) {
                 this.showOrder = true;
             }
         })
