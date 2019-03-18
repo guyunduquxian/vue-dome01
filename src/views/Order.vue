@@ -45,16 +45,8 @@ export default {
     data() {
         return {
             order: {},
+            showOrder: false,
             deskId: this.$storage.get("deskId"),
-        }
-    },
-    computed: {
-        showOrder() {
-            if(this.order) {
-                return true;
-            } else {
-                return false;
-            }
         }
     },
     created() {
@@ -62,9 +54,13 @@ export default {
         .then( res => {
             // console.log(res.data.result);
             this.order = res.data.result[0];
+            if(order) {
+                this.showOrder = true;
+            }
         })
         .catch( error => {
             console.log(error);
+            this.showOrder = false;
         });
     },
     methods: {
