@@ -6,8 +6,13 @@
           </header>
 
           <div class="desk_num">
-                <input type="text" @change="changeInput" v-model='deskId' placeholder="请输入您的就餐的桌号，如 A10"/>
-                <i class="iconfont icon-shanchu" v-show="deskDelShow" @click="clear"></i>
+              <div class="desk_inpput">
+                <input type="text" ref="markInput" @change="changeInput" v-model='deskId' placeholder="请输入您的餐桌号，如 A10"/>
+                <i class="iconfont icon-shanchu" v-show="deskDelShow" @click="deskClear"></i>
+              </div>
+                <div class="hint">
+                    <span v-show="showHint">* 您还未输入餐桌号</span>
+                </div>
           </div>
 
           <p class="notice">请选择真确的用餐人数，小二马上给您送餐具</p>
@@ -49,7 +54,8 @@ export default {
             p_num: '1人',
             mark_list: ['打包带走', '不要放辣椒', '微辣', '中辣'],
             deskId: "",
-            showToast: false
+            showToast: false,
+            showHint: false
         }
     },
     computed: {
@@ -65,22 +71,28 @@ export default {
     },
     methods: {
         addPeopleInfo() {
-            this.p_mark = this.p_mark.trim();
-            this.$axios.post("api/addPeopleInfo", {
-                uid: this.deskId,
-                p_num: this.p_num,
-                p_mark: this.p_mark
-            })
-            .then( res => {
-                console.log(res.data.msg);
-                this.$storage.set('deskId', this.deskId);
-                this.$router.push({
-                    path: '/home'
+            if (this.deskId) {
+                this.p_mark = this.p_mark.trim();
+                this.$axios.post("api/addPeopleInfo", {
+                    uid: this.deskId,
+                    p_num: this.p_num,
+                    p_mark: this.p_mark
+                })
+                .then( res => {
+                    console.log(res.data.msg);
+                    this.$storage.set('deskId', this.deskId);
+                    this.$router.push({
+                        path: '/home'
+                    });
+                })
+                .catch( error => {
+                    console.log(error);
                 });
-            })
-            .catch( error => {
-                console.log(error);
-            });
+            } else {
+                this.showHint = true;
+                this.$refs.markInput.focus();
+            }
+            
         },
         selectNum(i) {
             // console.log(i);
@@ -99,23 +111,29 @@ export default {
             this.p_mark = "";
         },
         changeInput() {
-            this.$axios.get("api/peopleInfoList?uid="+ this.deskId)
-            .then( res => {
-                // console.log(res.data);
-                //如果有用餐人数信息直接跳转到 点餐页面
-                if(res.data.result.length > 0) {
-                    this.showToast = true;
-                    setTimeout( () => {
-                        this.showToast = false;
-                        this.$router.push({
-                            path: '/home'
-                        });
-                    }, 2000)
-                }
-            })
-            .catch( error => {
-                console.log(error);
-            });
+            // console.log(this.deskId);
+            if (this.deskId) {
+                this.$axios.get("api/peopleInfoList?uid="+ this.deskId)
+                .then( res => {
+                    // console.log(res.data);
+                    //如果有用餐人数信息直接跳转到 点餐页面
+                    if(res.data.result.length > 0) {
+                        this.showToast = true;
+                        setTimeout( () => {
+                            this.showToast = false;
+                            this.$router.push({
+                                path: '/home'
+                            });
+                        }, 2000)
+                    }
+                })
+                .catch( error => {
+                    console.log(error);
+                });
+            }
+        },
+        deskClear() {
+            this.deskId = "";
         }
     }
 }
@@ -144,29 +162,42 @@ export default {
 
             .desk_num {
                 width: 6rem;
-                margin: 0.3rem auto;
-                position: relative;
-
-                input {
-                    display: block;
-                    width: 6rem;
+                margin: 0.3rem auto 0;
+                
+                .desk_inpput {
+                    position: relative;
                     height: 0.8rem;
-                    line-height: 0.8rem;
-                    border: 1px solid #eee;
-                    padding-left: 0.2rem;
-                    padding-right: 0.8rem;
-                    font-size: 0.32rem;
-                    border: 1px solid #eee;
-                    box-sizing: border-box;
-                    margin: 0 auto;
+
+                    input {
+                        display: block;
+                        width: 6rem;
+                        height: 0.8rem;
+                        line-height: 0.8rem;
+                        border: 1px solid #eee;
+                        padding-left: 0.2rem;
+                        padding-right: 0.8rem;
+                        font-size: 0.32rem;
+                        border: 1px solid #eee;
+                        box-sizing: border-box;
+                        margin: 0 auto;
+                    }
+
+                    i {
+                        position: absolute;
+                        top: 50%;
+                        right: 0.1rem;
+                        transform: translate(0, -50%);
+                        font-size: 0.44rem;
+                    }
                 }
 
-                i {
-                    position: absolute;
-                    top: 50%;
-                    right: 0.1rem;
-                    transform: translate(0, -50%);
-                    font-size: 0.44rem;
+                .hint {
+                    height: 0.5rem;
+                    margin-left: 0.2rem;
+
+                    span {
+                        color: red;
+                    }
                 }
             }
 

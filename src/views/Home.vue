@@ -92,11 +92,17 @@ export default {
         let height = this.$refs.foodsClassify[i].offsetTop;
         // console.log(height);
         //屏幕已经滚动的距离
-        let distance = document.documentElement.scrollTop;;  
+        let distance = document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset;
         // console.log(distance);
         //屏幕最大能往上滚动的距离，即所有内容的高度减去屏幕的高度
         let maxheight = document.documentElement.offsetHeight - window.screen.height;
         // console.log(maxheight);
+        function setScrollTop(distance) {
+            document.documentElement.scrollTop = distance;
+            document.body.scrollTop = distance;
+            window.pageYOffset = distance;
+        }
+
         //每一次滚动的距离
         let step;
         if(distance < height) {
@@ -118,22 +124,22 @@ export default {
         function smoothUp() {
           if (distance < height) {
               distance += step;
-              document.documentElement.scrollTop = distance;
+              setScrollTop(distance);
               setTimeout(smoothUp, 5);
           }
           else {
-              document.documentElement.scrollTop = height;
+              setScrollTop(height);
           }
         }
         //向下滚动
         function smoothDown() {
           if (distance > height) {
               distance -= step;
-              document.documentElement.scrollTop = distance;
+              setScrollTop(distance);
               setTimeout(smoothDown, 5);
           }
           else {
-              document.documentElement.scrollTop = height;
+              setScrollTop(height);
           }
         }
 
@@ -226,7 +232,7 @@ export default {
             background: #eee;
             top: 0px;
             left: 0px;
-            transition: all 1s;
+            transition: all 0.5s;
             transform: translate(-100%,0);
             z-index: 2;
 
